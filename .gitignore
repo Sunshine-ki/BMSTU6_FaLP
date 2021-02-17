@@ -1,8 +1,14 @@
 *.sty
 *.tex
 *.clo
+*.cls
+*.layout
+*.bst
 *.fls
 *.aux
+*.fdb_latexmk
+*.gz
+*.toc
 *.log
 *.out
 *.exe
