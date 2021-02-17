@@ -1,0 +1,8 @@
+*.sty
+*.tex
+*.clo
+*.fls
+*.aux
+*.log
+*.out
+*.exe
