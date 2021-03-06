@@ -1,0 +1,122 @@
+\documentclass[a4paper,oneside,12pt]{extreport}
+
+\include{preamble}
+
+
+\begin{document}
+
+\include{title}
+
+\section*{Практическая часть}
+
+\begin{task}
+	Пусть \code{(setf lst1 '(a b)) (setf lst2 '(c d))}.
+	Каковы результаты вычисления следующих выражений?
+	\begin{lstlisting}[language=Lisp]
+(cons lst1 lst2) 	;; ((A B) C D)
+(list lst1 lst2) 	;; ((A B) (C D))
+(append lst1 lst2) 	;; (A B C D)
+	\end{lstlisting}
+
+% cons всегда берет два аргумента и помещает первый в начало второго.
+% list берет один или больше аргументов и образует список, помещая аргументы в скобки.
+% append образует новый список, убирая скобки вокруг аргументов и помещая их в один список.
+% TODO: Рисуночки.
+
+\end{task}
+
+\begin{task}
+	Каковы результаты вычисления следующих выражений?
+
+	\begin{lstlisting}[language=Lisp]
+(reverse ())			;; Nil
+	\end{lstlisting}
+
+	\begin{lstlisting}[language=Lisp]
+(last ())			;; Nil
+	\end{lstlisting}
+
+	\begin{lstlisting}[language=Lisp]
+(reverse '(a))			;; (a)
+	\end{lstlisting}
+
+	\vspace*{4.5em plus .6em minus .5em}
+
+	\begin{lstlisting}[language=Lisp]
+(last '(a))			;; (a)
+	\end{lstlisting}
+
+	\begin{lstlisting}[language=Lisp]
+(reverse '((a b c)))		;; ((A B C))
+	\end{lstlisting}
+
+	\vspace*{4.5em plus .6em minus .5em}
+
+	\begin{lstlisting}[language=Lisp]
+(last '((a b c)))		;; ((A B C))
+	\end{lstlisting}
+
+
+\end{task}
+
+\begin{task}
+	Написать, по крайней мере, два варианта функции, которая возвращает последний элемент своего списка-аргумента.
+
+	\begin{lstlisting}[language=Lisp]
+(defun f-last-rec (lst)
+	(cond ((null (cdr lst)) (car lst))
+	(T (f-last-rec (cdr lst)))) )
+	
+	\end{lstlisting}
+
+Беремен первый элемент от перевернутого списка.
+	\begin{lstlisting}[language=Lisp]
+(defun f-last (lst)
+	(car (reverse lst)) )
+	\end{lstlisting}
+\end{task}
+
+\begin{task}
+	Написать, по крайней мере, два варианта функции, которая возвращает свой список-аргумент без последнего элемента.
+
+	\begin{lstlisting}[language=Lisp]
+(defun f1 (lst)
+	(reverse (cdr (reverse lst))) )
+	\end{lstlisting}
+	
+	\vspace*{4.5em plus .6em minus .5em}
+
+	\begin{lstlisting}[language=Lisp]
+(defun f1-rec (lst)
+	(cond ((null (cdr lst)) ())
+	(T (cons (car lst) (f1-rec (cdr lst))))) )
+	\end{lstlisting}
+\end{task}
+
+\begin{task}
+	Написать простой вариант игры в кости, в котором бросаются две правильные кости.
+	Если сумма выпавших очков равна 7 или 11 — выигрыш, если выпало (1, 1) или (6, 6) — игрок получает право снова бросить кости, во всех остальных случаях ход переходит ко второму игроку, но запоминается сумма выпавших очков.
+	Если второй игрок не выигрывает абсолютно, то выигрывает тот игрок, у которого больше очков.
+
+\end{task}
+
+\newpage
+
+\section*{Теоретическая часть}
+
+\subsection*{Структуроразрушающие и не разрушающие структуру списка функции}
+
+Функции для работы со списками делятся на две группы:
+
+\begin{enumerate}
+	\item Не разрушающие структуру. Если сохраняется возможность работать с исходными списками, значит функции не разрушают структуру.
+	(Пример: append, reverse, length, subst ...)
+	\item Разрушающие структуру. 
+	Если после использования какой-то стандартной функции после ее работы теряется 
+	возможность работы с теми списками, которые изначально были, значит их структура разрушилась. 
+	Чаще всего такие функции начинаются в буквы 'n (Пример: nconc, nreverse, nsubst ...)
+\end{enumerate}
+
+\section*{Отличие в работе функции cons, list, append и в их результате}
+
+\end{document}
