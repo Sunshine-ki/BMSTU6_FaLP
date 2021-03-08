@@ -50,8 +50,8 @@
 (defvar name-first)
 (defvar name-second)
 
-(setf name-first "Элис")
-(setf name-second "Паша")
+(setf name-first "Alice")
+(setf name-second "Pasha")
 
 ;; dice = ((1-6 1-6) 1/0)
 ;; Первый список: то, что выпало.
@@ -83,11 +83,11 @@
 ;; a - Наиболее универсальная директива - ~A, которая использует один аргумент формата любого типа
 ;; и печатает его в эстетичной (удобочитаемой) форме.
 (defun print-res (name dice) 
-	(format Nil "~%Выиграл(а) ~a Очки: ~a ~%" name  (car dice) (sum (car dice))) )
+	(format Nil "~%Win ~a ~a ~%" name  (car dice) (sum (car dice))) )
 
 (defun user-round (name)
 	(setf tmp-dice (roll-two-dice))
-	(format T "Имя игрока: ~a Выпало: ~a Сумма = ~a ~%" name tmp-dice (sum tmp-dice))
+	(format T "Player name: ~a ~a sum = ~a ~%" name tmp-dice (sum tmp-dice))
 	(cond ((is-win tmp-dice) (list tmp-dice 1))
 		((repeat-roll tmp-dice) (user-round name))
 		(T (list tmp-dice 0))) )
@@ -100,7 +100,7 @@
 	(cond ((= (cadr dice-second) 1) (print-res name-second dice-second))
 		((> (sum (car dice-first)) (sum (car dice-second))) (print-res name-first dice-first))
 		((< (sum (car dice-first)) (sum (car dice-second))) (print-res name-second dice-second))
-		((format Nil "Ничья"))))))
+		((format Nil "Draw"))))))
 
 ;; (defun play ()
 ;; 	(setf dice-first (user-round name-first))

@@ -10,95 +10,170 @@
 \section*{Практическая часть}
 
 \begin{task}
-	Пусть \code{(setf lst1 '(a b)) (setf lst2 '(c d))}.
-	Каковы результаты вычисления следующих выражений?
-	\begin{lstlisting}[language=Lisp]
-(cons lst1 lst2) 	;; ((A B) C D)
-(list lst1 lst2) 	;; ((A B) (C D))
-(append lst1 lst2) 	;; (A B C D)
-	\end{lstlisting}
+    Пусть \code{(setf lst1 '(a b)) (setf lst2 '(c d))}.
+    Каковы результаты вычисления следующих выражений?
+    \begin{lstlisting}[language=Lisp]
+(cons lst1 lst2)     ;; ((A B) C D)
+(list lst1 lst2)     ;; ((A B) (C D))
+(append lst1 lst2)   ;; (A B C D)
+    \end{lstlisting}
 
 % cons всегда берет два аргумента и помещает первый в начало второго.
 % list берет один или больше аргументов и образует список, помещая аргументы в скобки.
 % append образует новый список, убирая скобки вокруг аргументов и помещая их в один список.
-% TODO: Рисуночки.
 
 \end{task}
 
 \begin{task}
-	Каковы результаты вычисления следующих выражений?
+    Каковы результаты вычисления следующих выражений?
 
-	\begin{lstlisting}[language=Lisp]
-(reverse ())			;; Nil
-	\end{lstlisting}
+    \begin{lstlisting}[language=Lisp]
+(reverse ())            ;; Nil
+    \end{lstlisting}
 
-	\begin{lstlisting}[language=Lisp]
-(last ())			;; Nil
-	\end{lstlisting}
+    \begin{lstlisting}[language=Lisp]
+(last ())               ;; Nil
+    \end{lstlisting}
 
-	\begin{lstlisting}[language=Lisp]
-(reverse '(a))			;; (a)
-	\end{lstlisting}
+    \begin{lstlisting}[language=Lisp]
+(reverse '(a))          ;; (a)
+    \end{lstlisting}
 
-	\vspace*{4.5em plus .6em minus .5em}
+    \vspace*{4.5em plus .6em minus .5em}
 
-	\begin{lstlisting}[language=Lisp]
-(last '(a))			;; (a)
-	\end{lstlisting}
+    \begin{lstlisting}[language=Lisp]
+(last '(a))            ;; (a)
+    \end{lstlisting}
 
-	\begin{lstlisting}[language=Lisp]
-(reverse '((a b c)))		;; ((A B C))
-	\end{lstlisting}
+    \begin{lstlisting}[language=Lisp]
+(reverse '((a b c)))   ;; ((A B C))
+    \end{lstlisting}
 
-	\vspace*{4.5em plus .6em minus .5em}
+    \vspace*{4.5em plus .6em minus .5em}
 
-	\begin{lstlisting}[language=Lisp]
-(last '((a b c)))		;; ((A B C))
-	\end{lstlisting}
+    \begin{lstlisting}[language=Lisp]
+(last '((a b c)))        ;; ((A B C))
+    \end{lstlisting}
 
 
 \end{task}
 
 \begin{task}
-	Написать, по крайней мере, два варианта функции, которая возвращает последний элемент своего списка-аргумента.
+    Написать, по крайней мере, два варианта функции, которая возвращает последний элемент своего списка-аргумента.
 
-	\begin{lstlisting}[language=Lisp]
+    \begin{lstlisting}[language=Lisp]
 (defun f-last-rec (lst)
-	(cond ((null (cdr lst)) (car lst))
-	(T (f-last-rec (cdr lst)))) )
-	
-	\end{lstlisting}
+    (cond ((null (cdr lst)) (car lst))
+    (T (f-last-rec (cdr lst)))) )
+    
+    \end{lstlisting}
 
 Беремен первый элемент от перевернутого списка.
-	\begin{lstlisting}[language=Lisp]
+    \begin{lstlisting}[language=Lisp]
 (defun f-last (lst)
-	(car (reverse lst)) )
-	\end{lstlisting}
+    (car (reverse lst)) )
+    \end{lstlisting}
 \end{task}
 
 \begin{task}
-	Написать, по крайней мере, два варианта функции, которая возвращает свой список-аргумент без последнего элемента.
+    Написать, по крайней мере, два варианта функции, которая возвращает свой список-аргумент без последнего элемента.
 
-	\begin{lstlisting}[language=Lisp]
+    \begin{lstlisting}[language=Lisp]
 (defun f1 (lst)
-	(reverse (cdr (reverse lst))) )
-	\end{lstlisting}
-	
-	\vspace*{4.5em plus .6em minus .5em}
+    (reverse (cdr (reverse lst))) )
+    \end{lstlisting}
+    
+    \vspace*{4.5em plus .6em minus .5em}
 
-	\begin{lstlisting}[language=Lisp]
+    \begin{lstlisting}[language=Lisp]
 (defun f1-rec (lst)
-	(cond ((null (cdr lst)) ())
-	(T (cons (car lst) (f1-rec (cdr lst))))) )
-	\end{lstlisting}
+    (cond ((null (cdr lst)) ())
+    (T (cons (car lst) (f1-rec (cdr lst))))) )
+    \end{lstlisting}
 \end{task}
 
 \begin{task}
-	Написать простой вариант игры в кости, в котором бросаются две правильные кости.
-	Если сумма выпавших очков равна 7 или 11 — выигрыш, если выпало (1, 1) или (6, 6) — игрок получает право снова бросить кости, во всех остальных случаях ход переходит ко второму игроку, но запоминается сумма выпавших очков.
-	Если второй игрок не выигрывает абсолютно, то выигрывает тот игрок, у которого больше очков.
+    Написать простой вариант игры в кости, в котором бросаются две правильные кости.
+    Если сумма выпавших очков равна 7 или 11 — выигрыш, если выпало (1, 1) или (6, 6) — игрок получает право снова бросить кости, во всех остальных случаях ход переходит ко второму игроку, но запоминается сумма выпавших очков.
+    Если второй игрок не выигрывает абсолютно, то выигрывает тот игрок, у которого больше очков.
 
-	TODO: РЕЗУЛЬТАТ РАБОТЫ!!!
+    \begin{lstlisting}[language=Lisp]
+(defvar name-first)
+(defvar name-second)
+
+(setf name-first "Alice")
+(setf name-second "Pasha")
+
+;; dice = ((1-6 1-6) 1/0)
+(defvar dice-first)
+(defvar dice-second)
+(defvar tmp-dice)
+
+(defun roll-one-dice ()
+    (+ (random 6) 1 ) )
+
+(defun roll-two-dice ()
+    (list (roll-one-dice) (roll-one-dice)) )
+
+(defun sum (dice) 
+    (+ (car dice) (cadr dice)) )
+
+(defun is-win (dice) 
+    (cond ((= (sum dice) 7 )) 
+        ((= (sum dice) 11)) ) )
+
+(defun repeat-roll (dice)
+    (cond ((= (car dice) (cadr dice) 6))
+        ((= (car dice) (cadr dice) 1))) )
+
+
+(defun print-res (name dice) 
+    (format Nil "~%Win ~a ~a ~%" name  (car dice) (sum (car dice))) )
+
+(defun user-round (name)
+    (setf tmp-dice (roll-two-dice))
+    (format T "Player name: ~a ~a sum = ~a ~%" name tmp-dice (sum tmp-dice))
+    (cond ((is-win tmp-dice) (list tmp-dice 1))
+        ((repeat-roll tmp-dice) (user-round name))
+        (T (list tmp-dice 0))) )
+        
+
+(defun play ()
+    (setf dice-first (user-round name-first))
+    (if (= (cadr dice-first) 1) (print-res name-first dice-first)
+    (and (setf dice-second (user-round name-second))
+    (cond ((= (cadr dice-second) 1) (print-res name-second dice-second))
+        ((> (sum (car dice-first)) (sum (car dice-second))) (print-res name-first dice-first))
+        ((< (sum (car dice-first)) (sum (car dice-second))) (print-res name-second dice-second))
+        ((format Nil "Draw"))))))
+    \end{lstlisting}
+    
+	% \begin{figure}[ht!]
+	% 	\centering{
+	% 		\includegraphics[width=0.5\textwidth]{img/2.png}
+	% 		\caption{Результат работы 2.} }
+	% \end{figure}
+
+		
+	% \begin{figure}[ht!]
+	% 	\centering{
+	% 		\includegraphics[width=0.5\textwidth]{img/3.png}
+	% 		\caption{Результат работы 3.} }
+	% \end{figure}
+
+		
+	% \begin{figure}[ht!]
+	% 	\centering{
+	% 		\includegraphics[width=0.5\textwidth]{img/4.png}
+	% 		\caption{Результат работы 4.} }
+	% \end{figure}
+
+		
+	% \begin{figure}[ht!]
+	% 	\centering{
+	% 		\includegraphics[width=0.5\textwidth]{img/5.png}
+	% 		\caption{Результат работы 5.} }
+	% \end{figure}
 \end{task}
 
 
@@ -112,12 +187,12 @@
 Функции для работы со списками делятся на две группы:
 
 \begin{enumerate}
-	\item Не разрушающие структуру. Если сохраняется возможность работать с исходными списками, значит функции не разрушают структуру.
-	(Пример: append, reverse, length, subst ...)
-	\item Разрушающие структуру. 
-	Если после использования какой-то стандартной функции после ее работы теряется 
-	возможность работы с теми списками, которые изначально были, значит их структура разрушилась. 
-	Чаще всего такие функции начинаются в буквы 'n (Пример: nconc, nreverse, nsubst ...)
+    \item Не разрушающие структуру. Если сохраняется возможность работать с исходными списками, значит функции не разрушают структуру.
+    (Пример: append, reverse, length, subst ...)
+    \item Разрушающие структуру. 
+    Если после использования какой-то стандартной функции после ее работы теряется 
+    возможность работы с теми списками, которые изначально были, значит их структура разрушилась. 
+    Чаще всего такие функции начинаются в буквы 'n (Пример: nconc, nreverse, nsubst ...)
 \end{enumerate}
 
 \section*{Отличие в работе функции cons, list, append и в их результате}
