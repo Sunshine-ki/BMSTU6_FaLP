@@ -14,8 +14,10 @@
 ;; (f3 2 1) -> (1 2)
 
 ;; Номер 4
-(defun f4 (a b c) (cond ((and (> a b) (< a c)) T)))
+(defun f4 (a b c) (cond ((and (> a b) (< a c)) T)
+	((and (< a b) (> a c)) T)))
 ;; (f4 2 1 3) -> T
+;; (f4 2 3 1) -> T
 ;; (f4 1 2 3) -> Nil
 
 ;; Номер 5
