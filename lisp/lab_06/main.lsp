@@ -83,7 +83,7 @@
 ;; a - Наиболее универсальная директива - ~A, которая использует один аргумент формата любого типа
 ;; и печатает его в эстетичной (удобочитаемой) форме.
 (defun print-res (name dice) 
-	(format Nil "~%Win ~a ~a ~%" name  (car dice) (sum (car dice))) )
+	(format Nil "~%Win ~a ~a ~a~%" name  (car dice) (sum (car dice))) )
 
 (defun user-round (name)
 	(setf tmp-dice (roll-two-dice))
