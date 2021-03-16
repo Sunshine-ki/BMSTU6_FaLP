@@ -53,3 +53,14 @@
 	(- (list-of-list-rec lst 0) (length lst)))
 
 (list-of-list '((1 2) (3 4) (5 6 (7 8) 9))) ;; => 10
+
+;; №5 
+;; Квадрат смешанного стуктурированного списка
+;; В результирубщем списке только числа.
+(defun square-lst (lst) 
+	(cond ((null lst) Nil)
+	((symbolp (car lst)) (square-lst (cdr lst)))
+	((listp (car lst)) (append (square-lst (car lst)) (square-lst (cdr lst))))
+	(T (cons (* (car lst) (car lst)) (square-lst (cdr lst)))) )) 
+
+(square-lst '((1 2 a) 'b 3 T 4)) ;; => (1 4 9 16)
