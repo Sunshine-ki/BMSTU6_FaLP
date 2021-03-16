@@ -164,4 +164,49 @@
 (defun sum-all-odd (lst)
 	(sum-all-odd-rec lst 0))
 
-(sum-all-odd '((1 2) (3) abc a (b c 4 5)) ;; => 9
+(sum-all-odd '((1 2) (3) abc a (b c 4 5) T a)) ;; => 9
+
+;; №9 Обработка списка с информацией.
+
+;; (ФИО зарплата возраст категория)
+(defun get-fio (lst) (car lst))
+(defun get-salary (lst) (cadr lst))
+(defun get-age (lst) (caddr lst))
+(defun get-category (lst) (car lst))
+
+;; Изменить зарплату в зависимости от заданного условия
+(defun set-new-salary (man new-salary)
+	(list (get-fio man) new-salary (get-age man) (get-category man)) )
+
+(defun change-salary (condition lst new-salary)
+	(if (funcall condition lst) (set-new-salary lst new-salary) lst))
+
+(change-salary (lambda (man) (< (get-salary man) 135000 ))
+	 '(Alice 14 20 1) 14000) 
+;; Result: (ALICE 14000 20 ALICE)
+
+(defun change-all-salary (workers condition new-salary)
+	(cond ((null workers) Nil)
+	(T (cons (change-salary condition (car workers) new-salary)
+	(change-all-salary (cdr workers) condition new-salary))) ))
+
+;; Меняем у зарплату у всех, у кого она меньше, чем 13500 на 50000
+(change-all-salary 
+	'((Alice 12000 20 1)
+	(Pasha 12000 20 2)
+	(Nastya 80000 21 3))
+	(lambda (man) (< (get-salary man) 13500 ))
+	50000)
+;; Result: ((ALICE 50000 20 ALICE) (PASHA 50000 20 PASHA) (NASTYA 80000 21 3))
+
+;; Подсчитать сумарную зарплату.
+(defun sum-salary-rec (workers sum)
+	(cond ((null workers) sum)
+	(T (sum-salary-rec (cdr workers) (+ sum (get-salary(car workers))))) ))
+
+(defun sum-salary (workers)
+	(sum-salary-rec workers 0))
+
+(sum-salary '((Alice 120 20 1)
+	(Pasha 120 20 2)
+	(Nastya 150 21 3))) ;; => 390
