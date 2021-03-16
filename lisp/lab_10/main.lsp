@@ -50,3 +50,118 @@
 	(T (alloddr (cdr lst)))))
 
 (alloddr '(1 1 (3 5 7 (9)))) ;; T
+(alloddr '(1 1 a (3 5 7 (8)))) ;; Nil
+
+
+;; №4 Последний элемент хвостовой рекурсией с одним тестом завершнеия.
+(defun my-last (lst)
+	(cond ((null (cdr lst)) (car lst))
+	(T (my-last (cdr lst))) ))
+
+(my-last '(1 2 3 4 5 6))	;; => 6
+(my-last ())  				;; => NIL
+(my-last '(a b c d (e f))) 	;; => (E F)
+
+;; №5 Сумма всех чисел от 0 до n
+(defun f-sum-rec (lst n sum)
+	(cond ((= 0 n) sum)
+	(T (f-sum-rec (cdr lst) (- n 1) (+ sum (car lst)))) ))  
+
+(defun sum-rec (lst n)
+	(f-sum-rec lst n 0))
+
+(sum-rec '(1 2 3 4 5 6 7 8 9 10) 3) ;; => 6
+
+;; Вариант 1: От n-аргумента функции до последнего.
+(defun sum-n-last (lst n)
+	(cond ((= 0 n) (sum-rec lst (length lst)))
+	(T (sum-n-last (cdr lst) (- n 1))) ))
+	
+(sum-n-last '(1 2 3 4 5 6 7 8 9 10) 5) ;; => 40
+
+;; Вариант 2: От n-аргумента функции до m-аргумента с шагом d
+(defun do-step (lst step)
+	(cond ((= 0 step) lst) 
+	(T (do-step (cdr lst) (- step 1)))))
+
+(do-step '(1 2 3 4 5 6) 2) ;; => (3 4 5 6)
+
+(defun f-sum-rec-step (lst n step sum)
+	(cond ((or (= 0 n) (> step n)) sum)
+	(T (f-sum-rec-step (do-step lst step) (- n step) step (+ sum (car lst)))) ))  
+
+(defun sum-n-m-d (lst n m d)
+	(cond ((= 0 n) (f-sum-rec-step lst m d 0))
+	(T (sum-n-m-d (cdr lst) (- n 1) m d)) ))
+
+;; Нумерация с нуля!
+(sum-n-m-d '(1 2 3 4 5 6 7 8 9 10) 0 10 1) ;; => 55
+(sum-n-m-d '(1 2 3 4 5 6 7 8 9 10) 1 6 3)  ;; => 7
+
+;; №6 Последнее нечетное
+(defun last-odd-rec (lst last-odd-number)
+	(cond ((null lst) last-odd-number)
+	(T (last-odd-rec (cdr lst) 
+		(if (oddp (car lst)) (car lst) last-odd-number))) ))
+
+(defun last-odd (lst) 
+	(last-odd-rec lst Nil))
+
+(last-odd '(1 2 3 4 5 6 7)) 	;; => 7
+(last-odd '(1 2 3 4 5 6)) 		;; => 5
+(last-odd '(2 4 6 8))   		;; => NIL
+(last-odd '(1 3 5))		     	;; => 5
+(last-odd '(2 4 3 6 8 10)) 		;; => 3
+
+;; №7 
+;; Квадрат чисел списка-аргумента с cons-дополняемой 
+;; Рекурсией и одним тестом завершения.
+(defun square-lst (lst) 
+	(cond ((null lst) Nil)
+	(T (cons (* (car lst) (car lst)) (square-lst (cdr lst)))) )) 
+
+(square-lst '(1 2 3 4 5 6)) ;; => (1 4 9 16 25 36)
+
+
+;; №8 Из заданного списка все нечетные числа
+(defun select-odd (lst) 
+	(cond ((null lst) Nil)
+	(T (if 
+		(oddp (car lst)) (cons (car lst) (select-odd (cdr lst)))
+		(select-odd (cdr lst)))) ))
+
+(select-odd '(1 2 3 4 5 6 7 8 9 1)) ;; => (1 3 5 7 9 1)
+
+;; Вариант 1: select-even
+(defun select-even (lst) 
+	(cond ((null lst) Nil)
+	(T (if (evenp (car lst)) 
+		(cons (car lst) (select-even (cdr lst)))
+		(select-even (cdr lst)))) ))
+
+(SELECT-EVEN '(1 2 3 4 5 6 7 8 9 1)) ;; => (2 4 6 8)
+
+;; Вариант 2: Сумма нечетных чисел.
+(defun sum-all-odd-rec (lst sum) 
+	(cond ((null lst) sum) 
+	(T (sum-all-odd-rec (cdr lst) 
+		(if (oddp (car lst)) (+ (car lst) sum) sum))) ))
+
+(defun sum-all-odd (lst)
+	(sum-all-odd-rec lst 0))
+
+(sum-all-odd '(1 2 3 4 5)) ;; => 9
+
+;; Для смешанного стуктурированного списка:
+(defun sum-all-odd-rec (lst sum) 
+	(cond ((null lst) sum) 
+	((symbolp (car lst)) (sum-all-odd-rec (cdr lst) sum))
+	((listp (car lst)) 
+	(+ (sum-all-odd-rec (car lst) 0) (sum-all-odd-rec (cdr lst) sum)))
+	(T (sum-all-odd-rec (cdr lst) 
+		(if (oddp (car lst)) (+ (car lst) sum) sum))) ))
+
+(defun sum-all-odd (lst)
+	(sum-all-odd-rec lst 0))
+
+(sum-all-odd '((1 2) (3) abc a (b c 4 5)) ;; => 9
