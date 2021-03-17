@@ -40,32 +40,45 @@
 		(T Nil)) )
 
 (defun set-equal (set1 set2)
-	(if (= (length set1) (length set2)) 
-		T
-		(set-equal-rec set1 set2)) )
+    (if (= (length set1) (length set2)) 
+        (set-equal-rec set1 set2) Nil) )
+
+(set-equal '(1 2 3) '(4 5 6)) ;; Nil
+(set-equal '(1 2 3) '(3 1 2)) ;; T
 
 ;; №3 (Страна . Столица) 
 ;; Вернуть по стране столицу и по столице странц.
 
-(defun find-country (table country)
+(defun find-capital (table country)
 	(cond ((null table) Nil)
-		((eq (caar table) country)) 
-		(T (find-country (cdr table) country))) )
+		((eq (caar table) country) (cdar table)) 
+		(T (find-capital (cdr table) country))) )
 
-(defun find-capital (table capital)
+(defun find-country (table capital)
 	(cond ((null table) Nil)
-		((eq (cdar table) capital)) 
-		(T (find-capital (cdr table) capital))) )
+		((eq (cdar table) capital) (caar table)) 
+		(T (find-country (cdr table) capital))) )
 
 (find-capital 
-	'((Россия . Москва)
-	(Испания . Мадрид)
-	(Франция . Париж)) 'Москва)
+    '((Russia . Moscow)
+    (Spain . Madrid)
+    (France . Paris)) 'Russia) ;; MOSCOW
 
-(FIND-COUNTRY 
-	'((Россия . Москва)
-	(Испания . Мадрид)
-	(Франция . Париж)) 'Россия)
+(find-capital 
+    '((Russia . Moscow)
+    (Spain . Madrid)
+    (France . Paris)) 'Hungary) ;; Nil
+
+
+(find-country
+    '((Russia . Moscow)
+    (Spain . Madrid)
+    (France . Paris)) 'Moscow) ;; RUSSIA
+
+(find-country
+    '((Russia . Moscow)
+    (Spain . Madrid)
+    (France . Paris)) 'Budapest) ;; Nil
 
 ;; №4 Меняем местами первый и последний элемент.
 
@@ -76,9 +89,10 @@
 ;; Добавляем к последнему элементу весь список 
 ;; без последнего элемента, а к нему первый элемент.
 (defun swap-first-last (lst)
-	(append (append (last lst) (cdr (f1 lst))) (car lst)))
+	(append (append (last lst) (cdr (f1 lst))) (cons (car lst) Nil)))
 
-(cons (cons (car (last lst)) '(2 3)) (car lst))
+(swap-first-last '(1 2 3 4 5)) ;; (5 2 3 4 1)
+(swap-first-last '(1 2)) ;; (2 1)
 
 ;; №5 Меняем местами два элемента по индексу.
 
@@ -113,9 +127,9 @@
 	((= i1 i2) lst)
 	(T (swap-two-elements-rec lst i1 i2 0 lst))) )
 
-(swap-two-elements '(11 12 13 14 15) 0 4)
-(swap-two-elements '(11 12 13 14 15) 4 0)
-(swap-two-elements '(11 12 13 14 15) 0 0)
+(swap-two-elements '(11 12 13 14 15) 0 4) ;; (15 12 13 14 11)
+(swap-two-elements '(11 12 13 14 15) 4 0) ;; (15 12 13 14 11)
+(swap-two-elements '(11 12 13 14 15) 0 0) ;; (11 12 13 14 15)
 (swap-two-elements '(11 12 13 14 15) 5 0)
 
 ;; №6 
@@ -147,3 +161,5 @@
 (defun swap-to-left (lst)
 	(append (cdr lst) (cons (car lst) nil)) )
 
+(swap-to-right '(1 2 3 4 5 6))
+(swap-to-left '(1 2 3 4 5 6))

@@ -1,0 +1,295 @@
+\documentclass[a4paper,oneside,12pt]{extreport}
+
+\include{preamble}
+
+
+\begin{document}
+
+\include{title}
+
+\section*{Практическая часть}
+
+\begin{task}
+    Написать функцию, которая по своему списку-аргументу \code{lst} определяет, является ли он палиндромом (то есть равны ли \code{lst} и \code{(reverse lst)}).
+
+    \begin{lstlisting}[language=Lisp]
+(defun same-rec (lst1 lst2)
+(cond ((null lst1)) 
+    ((= (car lst1) (car lst2)) (same-rec (cdr lst1) (cdr lst2)))
+    (T Nil)) )
+
+(defun same (lst1 lst2)
+        (if (= (length lst1) (length lst2) ) 
+            (same-rec lst1 lst2)) )
+
+(defun is-palindrome (lst) 
+    (same lst (reverse lst)))
+    \end{lstlisting}
+
+    Пример использования:
+    \begin{lstlisting}[language=Lisp]    
+(is-palindrome '(1 2 3 3 2 1))  ;; T
+(is-palindrome '(1 2 3 2 1))    ;; T
+(is-palindrome '(1 2 3 4))      ;; Nil
+    \end{lstlisting}
+\end{task}
+		
+\begin{task}
+	Написать предикат \code{set-equal}, который возвращает \code{t}, если два его
+    множества-аргумента содержат одни и те же элементы, порядок которых не имеет значения.
+
+
+    \begin{lstlisting}[language=Lisp]
+(defun find-elem-in-set (set1 elem) 
+    (cond ((null set1) Nil)
+        ((= (car set1) elem) T)
+        (T (find-elem-in-set (cdr set1) elem)) ) )
+
+(defun set-equal-rec (set1 set2) 
+    (cond ((null set1))
+        ((find-elem-in-set set2 (car set1)) (set-equal-rec (cdr set1) set2))
+        (T Nil)) )
+
+(defun set-equal (set1 set2)
+    (if (= (length set1) (length set2)) 
+        (set-equal-rec set1 set2) Nil) )
+\end{lstlisting}
+
+    Пример использования:
+    \begin{lstlisting}[language=Lisp]
+(set-equal '(1 2 3) '(4 5 6)) ;; Nil
+(set-equal '(1 2 3) '(3 1 2)) ;; T
+    \end{lstlisting}
+
+\end{task}
+
+\begin{task}
+    Напишите необходимые функции, которые обрабатывают таблицу из точечных пар:
+    
+    (страна.столица), и возвращает по стране - столицу, а по столице - страну.
+    \begin{lstlisting}[language=Lisp]
+(defun find-capital (table country)
+    (cond ((null table) Nil)
+        ((eq (caar table) country) (cdar table)) 
+        (T (find-capital (cdr table) country))) )
+
+(defun find-country (table capital)
+    (cond ((null table) Nil)
+        ((eq (cdar table) capital) (caar table)) 
+        (T (find-country (cdr table) capital))) )
+    \end{lstlisting}
+
+    Пример использования:
+    \begin{lstlisting}[language=Lisp]
+(find-capital 
+    '((Russia . Moscow)
+    (Spain . Madrid)
+    (France . Paris)) 'Russia) ;; MOSCOW
+
+(find-capital 
+    '((Russia . Moscow)
+    (Spain . Madrid)
+    (France . Paris)) 'Hungary) ;; Nil
+
+
+(find-country
+    '((Russia . Moscow)
+    (Spain . Madrid)
+    (France . Paris)) 'Moscow) ;; RUSSIA
+
+(find-country
+    '((Russia . Moscow)
+    (Spain . Madrid)
+    (France . Paris)) 'Budapest) ;; Nil
+    \end{lstlisting}
+
+\end{task}
+
+\begin{task}
+	Напишите функцию \code{swap-first-last}, которая
+    переставляет в списке-аргументе первый и последний элементы.
+    
+    Функция f1 возвращает все, кроме последнего
+    \begin{lstlisting}[language=Lisp]
+(defun f1 (lst)
+    (reverse (cdr (reverse lst))) )
+    \end{lstlisting}
+    
+    Функция swap-first-last добавляет к последнему элементу весь список 
+    без последнего элемента, а к нему первый элемент.
+    \begin{lstlisting}[language=Lisp]
+(defun swap-first-last (lst)
+    (append (append (last lst) (cdr (f1 lst))) (cons (car lst) Nil)))
+    \end{lstlisting}
+
+    Пример использования:
+    \begin{lstlisting}[language=Lisp]
+(swap-first-last '(1 2 3 4 5)) ;; (5 2 3 4 1)
+(swap-first-last '(1 2)) ;; (2 1)
+    \end{lstlisting}
+
+\end{task}
+
+\begin{task}
+	Напишите функцию \code{swap-two-elements}, которая переставляет в списке-аргументе
+    два указанных своими порядковыми номерами элемента в этом списке.
+
+    \begin{lstlisting}[language=Lisp]
+(defun my-length-rec (lst n)
+    (cond 
+    ((null lst) n)
+    (T (my-length-rec (cdr lst) (+ n 1)))) )	
+
+(defun my-length (lst)	
+    (my-length-rec lst 0) )
+    \end{lstlisting}
+
+    Возвращает элемент по индексу.
+    \begin{lstlisting}[language=Lisp]
+(defun find-by-index-rec (lst index curr-index) 
+    (cond ((null lst) Nil)
+    ((= index curr-index ) (car lst))
+    (T (find-by-index-rec (cdr lst) index (+ curr-index 1)))) )
+
+(defun find-by-index (lst index) 
+    (find-by-index-rec lst index 0))
+    \end{lstlisting}
+
+    \begin{lstlisting}[language=Lisp]
+(defun swap-two-elements-rec (lst index1 index2 curr-index source-list)
+    (cond ((null lst) nil)
+        ((= curr-index index1) (cons (find-by-index source-list index2) (swap-two-elements-rec (cdr lst) index1 index2 (+ curr-index 1) source-list)))
+        ((= curr-index index2) (cons (find-by-index source-list index1) (swap-two-elements-rec (cdr lst) index1 index2 (+ curr-index 1) source-list)))
+        (T (cons (car lst) (swap-two-elements-rec (cdr lst) index1 index2 (+ curr-index 1) source-list) )) ) )
+    \end{lstlisting}
+
+    \begin{lstlisting}[language=Lisp]
+(defun swap-two-elements (lst i1 i2)
+    (cond 
+    ((>= i1 (my-length lst)) 
+    "The first index is larger than the size of the list")
+    ((>= i2 (my-length lst)) 
+    "The second index is larger than the size of the list")
+    ((< i1 0) 
+    "The first index is less than zero")
+    ((< i2 0) 
+    "The second index is less than zero")
+    ((= i1 i2) lst)
+    (T (swap-two-elements-rec lst i1 i2 0 lst))) )    
+    \end{lstlisting}
+
+    Пример использования:
+    \begin{lstlisting}[language=Lisp]
+(swap-two-elements '(11 12 13 14 15) 0 4) ;; (15 12 13 14 11)
+(swap-two-elements '(11 12 13 14 15) 4 0) ;; (15 12 13 14 11)
+(swap-two-elements '(11 12 13 14 15) 0 0) ;; (11 12 13 14 15)
+    \end{lstlisting}
+
+\end{task}
+
+\begin{task}
+    Напишите две функции, \code{swap-to-left} и \code{swap-to-right}, 
+    которые производят круговую перестановку в списке-аргументе влево и вправо, соответственно.
+    
+    Возвращает список без последнего элемента.
+    \begin{lstlisting}[language=Lisp]
+(defun f1 (lst)
+    (reverse (cdr (reverse lst))) )
+    \end{lstlisting}
+
+    \begin{lstlisting}[language=Lisp]
+(defun f-last (lst)
+        (car (reverse lst)) )
+    \end{lstlisting}
+
+    \begin{lstlisting}[language=Lisp]
+(defun swap-to-right (lst)
+    (cons (f-last lst) (f1 lst)))
+
+(defun swap-to-left (lst)
+	(append (cdr lst) (cons (car lst) nil)) )
+    \end{lstlisting}
+
+    Пример использования:
+    \begin{lstlisting}[language=Lisp]
+(swap-to-right '(1 2 3 4 5 6)) ;; (6 1 2 3 4 5)
+(swap-to-left '(1 2 3 4 5 6))  ;;(2 3 4 5 6 1)
+    \end{lstlisting}
+
+\end{task}
+      
+      
+
+    
+% \begin{figure}[ht!]
+% 	\centering{
+% 		\includegraphics[width=0.5\textwidth]{img/5.png}
+% 		\caption{Результат работы 5.} }
+% \end{figure}
+
+\newpage
+
+\section*{Теоретическая часть}
+
+\subsection*{Способы определения функции}
+
+
+1. С помощью \code{lambda}. 
+
+Базовое определение лямбда-выражения:
+
+(lambda лямбда-список тело\_функции)
+
+Пример:
+
+\begin{lstlisting}[language=Lisp]
+(lambda (x y) (+ x y))
+\end{lstlisting}
+
+Применение лямбда-выражений:
+
+(лямбда-выражение фактические\_параметры)
+
+Пример:
+
+\begin{lstlisting}[language=Lisp]
+((lambda (x y) (+ x y)) 1 2) ;; 3
+\end{lstlisting}
+
+
+2. С помощью \code{defun}. 
+Для неоднократного применения функции (а также для построения
+рекурсивной функции) используется встроенная функция defun.
+
+Синтаксис:
+
+(defun имя\_функции лямбда-список тело\_функции)
+
+Пример:
+
+\begin{lstlisting}[language=Lisp]
+(defun sum (x y) (+ x y))
+\end{lstlisting}
+
+Пример вызова:
+
+\begin{lstlisting}[language=Lisp]
+(sum 1 2) ;; 3
+\end{lstlisting}
+
+
+\subsection*{Варианты и методы модификации элементов списков}
+
+Функции для работы со списками делятся на две группы:
+
+\begin{enumerate}
+    \item Не разрушающие структуру. Если сохраняется возможность работать с исходными списками, значит функции не разрушают структуру.
+    (Пример: append, reverse, length, subst ...)
+    \item Разрушающие структуру. 
+    Если после использования какой-то стандартной функции после ее работы теряется 
+    возможность работы с теми списками, которые изначально были, значит их структура разрушилась. 
+    Чаще всего такие функции начинаются в буквы 'n (Пример: nconc, nreverse, nsubst ...)
+\end{enumerate}
+
+
+\end{document}
