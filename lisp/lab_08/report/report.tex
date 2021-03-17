@@ -145,5 +145,159 @@
 
 \subsection*{Порядок работы и варианты использования функционалов}
 
+Функционалы - функции, которые в качестве параметра принимают функцию.
+
+Применяющие функционалы позволяют применить свой функциональный аргумент (функцию) к заданным её аргументам.
+
+Функционал \textbf{apply} является функцией с двумя вычисляемыми аргументами, обращение к ней имеет вид: 
+
+\begin{lstlisting}[language=Lisp] 
+    (apply F L)
+\end{lstlisting}
+
+где $F$ – функциональный аргумент и $L$ – список: $L =>(p_1 ... p_n )$, $n \geq 0$
+рассматриваемый как список фактических параметров для $F$. Значение
+функционала – результат применения $F$ к этим фактическим параметрам,
+
+Пример:
+\begin{lstlisting}[language=Lisp] 
+(apply #'* '(2 5))                  ;; => 10
+(apply (lambda (x) (- x 10)) '(2))  ;; => -8    
+\end{lstlisting}
+
+Функционал \textbf{funcall} является специальной функцией.
+Обращение к ней:
+
+\begin{lstlisting}[language=Lisp] 
+(funcall F e1 ... en )
+\end{lstlisting}
+
+Где $n \geq 0$. Её действие аналогично apply, отличие состоит в том, что аргументы
+применяемой функции F задаются не списком, а по отдельности.
+
+Пример:
+
+\begin{lstlisting}[language=Lisp] 
+(funcall #'* '2 5)                  ;; => 10
+(funcall (lambda (x) (- x 10)) 2)   ;; => -8    
+\end{lstlisting}
+    
+В группу отображающих функционалов входят функции mapcar и maplist.
+Их имена имеют префикс map (mapping – отображение), поскольку их
+действие – отображение списка-аргумента в список-результат 
+за счёт применения заданной функции к элементам исходных списков.
+
+Обращение к \textbf{mapcar} имеет вид:
+
+\begin{lstlisting}[language=Lisp] 
+(mapcar F L1 L2 ... Ln)
+\end{lstlisting}
+
+Функционал mapcar последовательно применяет свой функциональный аргумент F (функцию
+от одного аргумента) к элементам списков $L_i$, которые извлекаются из $L_i$
+функцией-селектором car (поэтому имя car входит в имя функционала),
+и возвращает список из полученных значений. 
+
+Схематично результат может быть записан как:
+\begin{lstlisting}[language=Lisp] 
+((F (car L1) ... (car Ln)) (F (cadr L1) ... (cadr Ln)) (F (caddr L1) ... (caddr Ln)) ...).
+\end{lstlisting}
+
+Пример:
+\begin{lstlisting}[language=Lisp] 
+(mapcar #'length '((A B) (C) (D E F)))  ;; =>(2 1 3)
+(mapcar #'list '(A S D F))              ;; => ((A)(S)(D)(F))
+(mapcar (lambda (x) (if (< x 0) (* -1 x) x))  '(-1 2 3 -4 5)) ;; => (1 2 3 4 5)
+(mapcar #'* '(1 2 3) '(4 5 6))          ;; => (4 10 18)
+\end{lstlisting}
+
+
+Обращение к \textbf{maplist} имеет вид:
+\begin{lstlisting}[language=Lisp] 
+(maplist F L1 ... Ln)
+\end{lstlisting}
+
+Функционал \textbf{maplist} последовательно применяет свой функциональный
+аргумент $F$ к спискам-аргументам $L_i$ и их хвостовым частям (полученным из
+$L$ путём отбрасывания первого элемента, первых двух элементов и т.д.) и
+возвращает список из вычисленных значений. 
+
+Схематично действие этого функционала можно записать как
+\begin{lstlisting}[language=Lisp] 
+((F L1 ... Ln) (F (cdr L1) ... (cdr Ln)) (F (cddr L1) ... (cddr Ln))...)
+\end{lstlisting}
+
+Пример:
+\begin{lstlisting}[language=Lisp] 
+(maplist #'list '(a b c d)) 
+;; => (((A B C D)) ((B C D)) ((C D)) ((D)))
+
+(maplist #'list '(1 2 3) '(4 5 6))
+;; => (((1 2 3) (4 5 6)) ((2 3) (5 6)) ((3) (6)))
+\end{lstlisting}
+
+\begin{lstlisting}[language=Lisp] 
+(find-if F L)
+\end{lstlisting}
+
+\textbf{find-if} применяет предикат $F$ к списку аргументу $L$, 
+и возвращает первый элемент, для которого результат применяемого предиката отличен от $Nil$.
+В случае, если все элементы не удовлетворяют предикату возвращается $Nil$:
+
+Пример:    
+\begin{lstlisting}[language=Lisp] 
+(find-if #'evenp '(1 2 3 4 5))  ;; => 2
+(find-if #'evenp '(1 3 5))      ;; => Nil
+(find-if (lambda (x) (> x 0)) '(-5 1 2 5 -1)) ;; 1
+\end{lstlisting}
+
+\begin{lstlisting}[language=Lisp] 
+(remove-if F L)
+\end{lstlisting}
+\textbf{remove-if} (\textbf{remove-if-not}) возвращает список 
+без элементов для которых истин предикат $F$.
+
+Пример:
+\begin{lstlisting}[language=Lisp] 
+(remove-if #'evenp '(1 2 3))        ;; => (1 3)
+(remove-if-not #'evenp '(1 2 3))    ;; => (2)
+\end{lstlisting}
+
+\textbf{every} возвращает Nil, как только предикат (первый аргумент) для очередного аргумента списка-аргумента вернул Nil, 
+иначе, если применение предиката для каждого элемента вернуло T, вернется T.
+
+Пример:
+\begin{lstlisting}[language=Lisp] 
+(every #'symbolp '(a b c d))    ;; T
+(every #'symbolp '(a b c 1))    ;; Nil
+
+(every #'numberp '(1 2 3))      ;; T
+(every #'numberp '(1 2 a))      ;; Nil
+\end{lstlisting}
+
+\textbf{some} возвращает истину, как только предикат (первый аргумент) для очередного аргумента списка-аргумента вернул истину, 
+иначе, если применение предиката для каждого элемента вернуло Nil, вернется Nil.
+
+\begin{lstlisting}[language=Lisp] 
+(some #'numberp '(1 2 3)) ;; => T
+(some #'numberp '(1 2 a)) ;; => T
+(some #'numberp '(a b c)) ;; => Nil
+\end{lstlisting}
+
+\textbf{reduce} реализует редукцию заданного списка.
+Применяет функцию $F$ к первому элементу и начальному значению $A$, 
+далее результат служит аргументом для применения этой же функции и второго аргумента и т.д..
+
+Схематично можно представить так:
+\begin{lstlisting}[language=Lisp] 
+    (reduce F L :initial-value A) = (F(...(F(F A e 1 ) e 2 ))...e n )
+\end{lstlisting}
+
+Пример:
+\begin{lstlisting}[language=Lisp] 
+(reduce #'* '(1 2 3))                                       ;; => 6
+(reduce (lambda (x y) (+ x y)) '(1 2 3))                    ;; => 6
+(reduce (lambda (x y) (+ x y)) '(1 2 3) :initial-value 10)  ;; => 16
+\end{lstlisting}
 
 \end{document}
