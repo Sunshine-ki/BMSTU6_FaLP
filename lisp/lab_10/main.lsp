@@ -63,6 +63,7 @@
 (my-last '(a b c d (e f))) 	;; => (E F)
 
 ;; №5 Сумма всех чисел от 0 до n
+;; Хвостовая.
 (defun f-sum-rec (lst n sum)
 	(cond ((= 0 n) sum)
 	(T (f-sum-rec (cdr lst) (- n 1) (+ sum (car lst)))) ))  
@@ -71,6 +72,14 @@
 	(f-sum-rec lst n 0))
 
 (sum-rec '(1 2 3 4 5 6 7 8 9 10) 3) ;; => 6
+
+;; Дополняемая
+(defun sum-rec (lst n)
+	(cond ((= 0 n) 0)
+	(T (+ (car lst) (sum-rec (cdr lst) (- n 1)))) ))
+
+(sum-rec '(1 2 3 4 5 6 7 8 9 10) 3) ;; => 6
+
 
 ;; Вариант 1: От n-аргумента функции до последнего.
 (defun sum-n-last (lst n)
@@ -210,3 +219,11 @@
 (sum-salary '((Alice 120 20 1)
 	(Pasha 120 20 2)
 	(Nastya 150 21 3))) ;; => 390
+
+;; Использовать композицию функций:
+(sum-salary (change-all-salary 
+	'((Alice 12000 20 1)
+	(Pasha 12000 20 2)
+	(Nastya 80000 21 3))
+	(lambda (man) (< (get-salary man) 13500 ))
+	50000)) ;; => 180000
