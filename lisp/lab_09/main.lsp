@@ -6,10 +6,12 @@
 
 (defun select-between (lst a b)
 	(cond ((null lst) ())
-	((symbolp (car lst)) (select-between (cdr lst) a b))
+	((symbolp (car lst)) (cons (car lst) (select-between (cdr lst) a b)))
 	((listp (car lst)) (cons (select-between (car lst) a b) (select-between (cdr lst) a b)))
 	((check-border (car lst) a b) (cons (car lst) (select-between (cdr lst) a b)))
 	(T (select-between (cdr lst) a b))) )
+
+(select-between '(1 2 (a b 3 4) T c 4 6 11 5) 2 7) ;; (2 (A B 3 4) T C 4 6 5)
 
 ;; №2 Декартово произведение
 
@@ -30,6 +32,7 @@
 
 ;; №3
 (reduce #'+ ()) ;; 0
+(reduce #'* ()) ;; 1
 
 ;; №4
 (defun list-of-list-rec (lst len)
@@ -56,7 +59,7 @@
 
 ;; №5 
 ;; Квадрат смешанного стуктурированного списка
-;; В результирубщем списке только числа.
+;; В результирующем списке только числа.
 (defun square-lst (lst) 
 	(cond ((null lst) Nil)
 	((symbolp (car lst)) (square-lst (cdr lst)))

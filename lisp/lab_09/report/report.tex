@@ -1,0 +1,183 @@
+\documentclass[a4paper,oneside,12pt]{extreport}
+
+\include{preamble}
+
+
+\begin{document}
+
+\include{title}
+
+\section*{Практическая часть}
+
+\begin{task}
+    Напишите 
+
+    \begin{lstlisting}[language=Lisp]
+(defun check-border (x a b)
+    (and (>= x a) (<= x b)) )
+
+(defun select-between (lst a b)
+    (cond ((null lst) ())
+    ((symbolp (car lst)) (cons (car lst) (select-between (cdr lst) a b)))
+    ((listp (car lst)) (cons (select-between (car lst) a b) (select-between (cdr lst) a b)))
+    ((check-border (car lst) a b) (cons (car lst) (select-between (cdr lst) a b)))
+    (T (select-between (cdr lst) a b))) )
+    \end{lstlisting}
+
+    Пример использования:
+    \begin{lstlisting}[language=Lisp] 
+(select-between '(1 2 (a b 3 4) T c 4 6 11 5) 2 7) ;; (2 (A B 3 4) T C 4 6 5)
+    \end{lstlisting}
+\end{task}
+
+\begin{task}
+	Написать функцию, вычисляющую декартово произведение двух своих списков-аргументов.
+	(Напомним, что $A\times B$ — это множество всевозможных пар $(a\;b)$, где $a\in A$, $b\in B$)
+
+    \begin{lstlisting}[language=Lisp]
+(defun decart-elem (lst elem)
+	(cond ((null lst) ())
+	(T (cons (list elem (car lst)) (decart-elem (cdr lst) elem)))) )
+    \end{lstlisting}
+
+
+    Пример использования:
+    \begin{lstlisting}[language=Lisp]    
+(decart-elem '(a b c) 'd) ;; => ((D A) (D B) (D C))
+    \end{lstlisting}
+
+    \begin{lstlisting}[language=Lisp]
+(defun decart (lst1 lst2)
+	(cond ((null lst1) nil)
+	(T (append (decart-elem lst2 (car lst1)) (decart (cdr lst1) lst2)))) )
+    \end{lstlisting}
+
+    Пример использования:
+    \begin{lstlisting}[language=Lisp]   
+;; ((A D) (A E) (A F) (B D) (B E) (B F) (C D) (C E) (C F))
+(decart '(a b c) '(d e f))  
+    \end{lstlisting}
+\end{task}
+
+\begin{task}
+    Почему так реализовано \code{reduce}, в чем причина? 
+
+    \begin{lstlisting}[language=Lisp]
+        (reduce #'+ ()) ; 0
+        (reduce #'* ()) ; 1
+    \end{lstlisting}
+        
+    $ L = (e_1 e_2 ... e_n )$
+
+    (reduce F L) $\equiv$ (F ( ... (F (F $e_1$ initial-value) $e_2$)) ... $e_n$)
+
+    \begin{lstlisting}[language=Lisp]
+(reduce '+ '(1 2 3 4)) ;; 10
+(reduce '* '(1 2 3 4)) ;; 24
+    \end{lstlisting}
+
+    Причина состоит в том, что если начальное значение при
+    умножении будет равно нулю, то и результат будет равен нулю
+    \begin{lstlisting}[language=Lisp]
+(reduce '* '(1 2 3 4) :initial-value 0) ;; 0
+    \end{lstlisting}
+
+    В случае сложения результат будет на единицу больше, 
+    что является некорректным результатом.
+    \begin{lstlisting}[language=Lisp]
+(reduce '+ '(1 2 3 4) :initial-value 1) ;; 11
+    \end{lstlisting}
+        
+
+\end{task}
+
+\begin{task}
+	Пусть \code{list-of-list} список, состоящий из списков.
+	Написать функцию, которая вычисляет сумму длин всех элементов \code{list-of-list}, т.~е. например для аргумента \code{((1 2) (3 4)) -> 4}.
+
+    \begin{lstlisting}[language=Lisp]
+(defun list-of-list-rec (lst len)
+	(cond ((null lst) len)
+	(T (list-of-list-rec (cdr lst) (+ len (length (car lst)) )))))
+
+(defun list-of-list (lst)
+	(list-of-list-rec lst 0))
+    \end{lstlisting}
+
+    Пример использования:
+    \begin{lstlisting}[language=Lisp]    
+(list-of-list '((1 2 3) (4 5))) ;; => 5
+    \end{lstlisting}
+
+    Вариант для структурированного списка:
+
+    Примечание: +1 потому что нужно ещё учесть сам список (который дальше будет просматриваться).
+    \begin{lstlisting}[language=Lisp]
+(defun list-of-list-rec (lst len)
+    (cond ((null lst) len)
+        ((listp (car lst)) 
+        (+ 1 (list-of-list-rec (car lst) 0) (list-of-list-rec (cdr lst) len))) 
+        (T (list-of-list-rec (cdr lst) (+ 1 len))) ))
+
+(defun list-of-list (lst)
+    (- (list-of-list-rec lst 0) (length lst)))
+     \end{lstlisting}
+        
+    Пример использования:
+    \begin{lstlisting}[language=Lisp]  
+(list-of-list '((1 2) (3 4) (5 6 (7 8) 9))) ;; => 10
+    \end{lstlisting}
+\end{task}
+
+\begin{task}
+    Написать функцию, возвращающую 
+    квадрат смешанного стуктурированного списка.
+    В результирующем списке только числа.
+    \begin{lstlisting}[language=Lisp]
+(defun square-lst (lst) 
+	(cond ((null lst) Nil)
+	((symbolp (car lst)) (square-lst (cdr lst)))
+	((listp (car lst)) (append (square-lst (car lst)) (square-lst (cdr lst))))
+	(T (cons (* (car lst) (car lst)) (square-lst (cdr lst)))) )) 
+    \end{lstlisting}
+
+    Пример использования:
+    \begin{lstlisting}[language=Lisp]    
+(square-lst '((1 2 a) 'b 3 T 4))    ;; => (1 4 9 16)
+(square-lst '((((1 2 3)))))         ;; => (1 4 9)
+    \end{lstlisting}
+\end{task}
+
+
+% \begin{figure}[ht!]
+% 	\centering{
+% 		\includegraphics[width=0.5\textwidth]{img/5.png}
+% 		\caption{Результат работы 5.} }
+% \end{figure}
+
+\newpage
+
+\section*{Теоретическая часть}
+
+\subsection*{Классификация рекурсивных функций}
+
+\textbf{Рекурсия} -- ссылка на описываемый объект во время его описания.
+
+\begin{enumerate}
+    \item Простая - рекурсивный вызов встречается один раз.
+    \item Второго порядка - несколько рекурсивных вызовов.
+    \item Взаимная - несколько функций, которые могут друг друга взаимно вызывать.
+    \item Хвостовая рекурсия - результат строится на входе в рекурсию.
+    На выходе ничего считать не нужно.
+    
+    Для преобразования не хвостовой рекурсии в хвостовую можно использовать
+    дополнительные параметры, в которые при каждом вызове рекурсии будет 
+    формироваться и записываться результат.
+    В этом случае необходимо использовать функцию-оболочку для запуска рекурсивной функции с начальными значениями дополнительных параметров.
+ 
+    % рекурсивный вызов последний.
+    \item Дополняемая рекурсия - использует дополнительную функцию.
+    (результат рекурсии используется, как аргумент некоторой другой функции, которая называется дополняемой функцией)
+\end{enumerate}
+
+\end{document}
