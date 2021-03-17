@@ -32,7 +32,7 @@
 	(cond ((null lst) ())
 	(T (cons (* num (car lst)) (f (cdr lst) num))) ) )
 
-
+(f '(1 2 3 4) 5) ;; (5 10 15 20)
 
 ;; Б)
 (defun f (lst num)
@@ -40,6 +40,8 @@
 	((symbolp (car lst)) (cons (car lst) (f (cdr lst) num)))
 	((listp (car lst)) (cons (f (car lst) num) (f (cdr lst) num)))
 	(T (cons (* num (car lst)) (f (cdr lst) num))) ) )
+
+(f '(1 2 (3 4 a) (b) T 7) 2) ;; (2 4 (6 8 A) (B) T 14)
 
 
 ;; №2 (Из лаб 5 №8)
@@ -50,11 +52,12 @@
 
 (defun select-between (lst a b)
 	(cond ((null lst) ())
-	((symbolp (car lst)) (select-between (cdr lst) a b))
+	((symbolp (car lst)) (cons (car lst) (select-between (cdr lst) a b)))
 	((listp (car lst)) (cons (select-between (car lst) a b) (select-between (cdr lst) a b)))
 	((check-border (car lst) a b) (cons (car lst) (select-between (cdr lst) a b)))
 	(T (select-between (cdr lst) a b))) )
 
+(select-between '(1 2 (a b 3 4) T c 4 6 11 5) 2 7) ;; (2 (A B 3 4) T C 4 6 5)
 
 ;; №3
 ;; mapcar примерняет свой первый аргумент поэлементно к своим аргументам.
@@ -75,12 +78,18 @@
 	((listp (car lst)) (cons (f-rec (car lst)) (f-rec (cdr lst))))
 	(T (cons (- (car lst) 10) (f-rec (cdr lst))))) )
 
+(f-func '(11 12 13 14 1)) ;; (1 2 3 4 -9)  
+(f-rec '(11 12 13 14 1))  ;; (1 2 3 4 -9)
+
 ;; №5
 
 (defun f (lst)
 	(cond ((null lst) NIL)
 	((null (car lst)) NIL) ;; (f (cdr lst)) ???
 	(T (car lst))) )
+
+(f '(Nil 1 2 3)) ;; NIL
+(f '((1 2 3) 4 5 6)) ;; (1 2 3)
 
 ;; Сумма числовых элементов смешанного структурированного списка
 (defun f-rec (lst num)

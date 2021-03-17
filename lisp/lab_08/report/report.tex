@@ -1,0 +1,149 @@
+\documentclass[a4paper,oneside,12pt]{extreport}
+
+\include{preamble}
+
+
+\begin{document}
+
+\include{title}
+
+\section*{Практическая часть}
+
+\begin{task}
+    Напишите функцию, которая умножает на заданное число-аргумент все числа из заданного списка-аргумента, когда
+	
+    a) все элементы списка — числа,
+    \begin{lstlisting}[language=Lisp]
+(defun f (lst num)
+    (cond ((null lst) ())
+    (T (cons (* num (car lst)) (f (cdr lst) num))) ) )
+\end{lstlisting}
+
+    Пример использования:
+    \begin{lstlisting}[language=Lisp]    
+(f '(1 2 3 4) 5) ;; (5 10 15 20)
+    \end{lstlisting}
+
+    б) элементы списка — любые объекты.
+    \begin{lstlisting}[language=Lisp]
+(defun f (lst num)
+    (cond ((null lst) ())
+    ((symbolp (car lst)) (cons (car lst) (f (cdr lst) num)))
+    ((listp (car lst)) (cons (f (car lst) num) (f (cdr lst) num)))
+    (T (cons (* num (car lst)) (f (cdr lst) num))) ) )
+    \end{lstlisting}
+
+    Пример использования:
+    \begin{lstlisting}[language=Lisp]    
+(f '(1 2 (3 4 a) (b) T 7) 2) ;; (2 4 (6 8 A) (B) T 14)
+    \end{lstlisting}
+\end{task}
+
+\begin{task}
+    Напишите функцию, \code{select-between}, которая из списка-аргумента,
+	содержащего только числа, выбирает только те, которые расположены между
+    двумя указанными границами-аргументами и возвращает их в виде списка
+
+    \begin{lstlisting}[language=Lisp]
+(defun check-border (x a b)
+    (and (>= x a) (<= x b)) )
+
+(defun select-between (lst a b)
+	(cond ((null lst) ())
+	((symbolp (car lst)) (cons (car lst) (select-between (cdr lst) a b)))
+	((listp (car lst)) (cons (select-between (car lst) a b) (select-between (cdr lst) a b)))
+	((check-border (car lst) a b) (cons (car lst) (select-between (cdr lst) a b)))
+	(T (select-between (cdr lst) a b))) )
+    \end{lstlisting}
+
+    Пример использования:
+    \begin{lstlisting}[language=Lisp]    
+(select-between '(1 2 (a b 3 4) T c 4 6 11 5) 2 7) ;; (2 (A B 3 4) T C 4 6 5)
+    \end{lstlisting}
+\end{task}
+
+\begin{task}
+    Что будет результатом (mapcar 'вектор '(570-40-8))
+
+    mapcar примерняет свой первый аргумент поэлементно к своим аргументам.
+    Т.е. первым аргументом должна быть функция. В нашем случае функции 'вектор' нет. 
+
+    Результат: Error: ВЕКТОР is undefined.
+\end{task}
+
+
+\begin{task}
+    Напишите функцию, которая уменьшает на 10 все числа из списка аргумента этой функции.
+
+    \begin{lstlisting}[language=Lisp]
+(defun f-func (lst)
+    (mapcar (lambda (x) (- x 10)) lst))
+    \end{lstlisting}
+
+    \begin{lstlisting}[language=Lisp]
+(defun f-rec (lst)
+    (cond ((null lst) ())
+    ((symbolp (car lst)) (cons (car lst) (f-rec (cdr lst))))
+    ((listp (car lst)) (cons (f-rec (car lst)) (f-rec (cdr lst))))
+    (T (cons (- (car lst) 10) (f-rec (cdr lst))))) )    
+    \end{lstlisting}
+
+    Пример использования:
+    \begin{lstlisting}[language=Lisp]  
+(f-func '(11 12 13 14 1))       ;; (1 2 3 4 -9)  
+(f-rec '(11 12 13 14 1))        ;; (1 2 3 4 -9)
+(f-rec '(11 12 (14 b 15) 16))   ;;(1 2 (4 B 5) 6)
+    \end{lstlisting}
+\end{task}
+
+\begin{task}
+    Написать функцию, которая возвращает первый аргумент
+    списка-аргумента, который сам является непустым списком.
+
+    \begin{lstlisting}[language=Lisp]
+(defun f (lst)
+	(cond ((null lst) NIL)
+	((null (car lst)) NIL)
+	(T (car lst))) )
+    \end{lstlisting}
+
+    Пример использования:
+    \begin{lstlisting}[language=Lisp]    
+(f '(Nil 1 2 3)) ;; NIL
+(f '((1 2 3) 4 5 6)) ;; (1 2 3)
+    \end{lstlisting}
+\end{task}
+    
+\begin{task}
+    Сумма числовых элементов смешанного структурированного списка
+    \begin{lstlisting}[language=Lisp] 
+(defun f-rec (lst num)
+	(cond ((null lst) num)
+	((symbolp (car lst)) (f-rec (cdr lst) num))
+	((listp (car lst)) (+ (f-rec (car lst) 0) (f-rec (cdr lst) num)))
+	(T (f-rec (cdr lst) (+ num (car lst))))) )
+
+(defun f (lst)
+	(f-rec lst 0) )   
+    \end{lstlisting}
+
+    Пример использования:
+    \begin{lstlisting}[language=Lisp]    
+(f '(1 2 3 (a b c) (a 2 b) (((c))) ((5)))) ;; => 13
+    \end{lstlisting}
+\end{task}
+
+% \begin{figure}[ht!]
+% 	\centering{
+% 		\includegraphics[width=0.5\textwidth]{img/5.png}
+% 		\caption{Результат работы 5.} }
+% \end{figure}
+
+\newpage
+
+\section*{Теоретическая часть}
+
+\subsection*{Порядок работы и варианты использования функционалов}
+
+
+\end{document}
