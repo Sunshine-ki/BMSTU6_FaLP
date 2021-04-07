@@ -1,0 +1,291 @@
+\documentclass[a4paper,oneside,12pt]{extreport}
+
+\include{preamble}
+
+
+\begin{document}
+
+\include{title}
+
+\section*{Теоретическая часть}
+
+\subsection*{Логическое программирование}
+
+\textbf{Логическое программирование} -- это программирование на знаниях. 
+Логическое программирование принципиально работает не с данными, а со знаниями.
+% В отличии от императивных яп (в них определяется порядком записи правил (команд) 
+Порядок действий в системе логического программирования prolog определяется алгоритмом унификации. 
+
+Программируя на императивным я.п., программист должен задать порядок действий,
+(который в дальнейшем будет последовательно выполнен), т.е. объяснить компьютеру \textbf{как} решать задачу.
+В случае декларативного я.п. программист должен описать \textbf{что} нужно решить (А уже с помощью алгоритма унификации будет решена задача)
+
+\subsection*{Элементы языка}
+
+\textbf{Элементы языка}: терм.
+
+\textbf{Терм} - это:
+\begin{enumerate}
+    \item \textbf{константа}:
+    \begin{enumerate}
+        \item число (пример: 1; 55; 12.32);
+        \item символьный атом. Начинается со  \textbf{строчной} буквы и используется для обозначения конкретного объекта предметной области или для обозначения конкретного отношения (пример: alice, iu7\_63B);
+        \item строка - последовательность символов, заключенная в кавычки (пример: "Элис Сукочева").
+    \end{enumerate}
+    \item \textbf{переменная}
+    \begin{enumerate}
+        \item Именнованная - комбинация символов, цифр и '\_', которая начинается с \textbf{прописной} буквы или с символа '\_' (пример: Name, \_A). Переменные могут связываться с различными объектами – конкретизироваться;
+        \item Анонимная - обозначается символом '\_'. Анонимные переменные не могут быть связаны со значением.
+    \end{enumerate}
+    \item \textbf{составной терм} - взаимосвязанная информация. Показывает связь между объектами. Т.е. кто от чего зависит. 
+    Синтаксис: \textbf{$f(t_1, t_2, ... , t_m)$}, где $f$ - функтор - символьная константа, обозначающая имя отношения. $t_1$, $t_2$, ... , $t_m$ - термы, являющиеся аргументами. Арность - число аргументов. (Пример: учится(элис, мгту) - знание о то, что Элис учится в МГТУ.
+\end{enumerate}
+
+
+\subsection*{Программа на prolog}
+
+\textbf{Программа на prolog} - база знаний и вопрос. 
+
+База знаний - это факты и правила. Каждое предложение (факт или правило) должно заканчиваться точкой.
+
+\textbf{Правило} имеет вид:
+    A :- $B_1$, ... , $B_n$
+    
+A - заголовок правила (терм).
+
+$B_1$, ... , $B_n$ - тело правила (термы). 
+
+Символ ":-" это специальный символ-разделитель.
+
+\textbf{Факт} – это частный случай правила. Факт – это предложение, в котором отсутствует тело
+(т.е. тело пустое). 
+% В фактах присутствую только заголовки, а значит знания в заголовках.
+
+\textbf{Заголовок} - составной терм, который содержит знание. Знания в заголовках.
+
+\textbf{В теле} прописаны условия истинности этого знания (которое написано в заголовке).
+
+В разделе \textbf{CLAUSES} записываются факты и правила.
+
+Пример:
+
+\begin{lstlisting}[language=Prolog]
+CLAUSES
+    study(alice, bmstu).
+    study(ivan, bmstu).
+\end{lstlisting}
+    
+% Вопрос - вид предложения.
+\textbf{Вопрос} - частный случай правила, состоит только из тела (составного терма или нескольких составных термов).
+Используется, чтобы определить, выполняется ли некоторое отношение между описанными в программе объектами.
+Ответом может быть "Yes" или "No".
+
+В разделе GOAL содержатся цели, которые нужно достигнуть. 
+Главная задача заключается в том, чтобы дать ответ "Yes" на поставленный вопрос.
+В случае, если система не может ответить "Yes", система отвечает "No".
+
+Пример:
+\begin{lstlisting}[language=Prolog]
+GOAL
+    study(alice, bmstu) % Yes
+\end{lstlisting}
+
+% Переменные предназначены для передачи значений "во времени и в пространстве".
+% Конкретизация переменной - связь переменной с объектом.
+
+\subsection*{Механизм унификации}
+\textbf{Механизм унификации} (подбор нужного решения).
+Поиск ответа на поставленный вопрос заключается в поиске нужного знания с помощью механизма унификации. Данный механизм встроен в систему и недоступен программисту.
+
+\textbf{Процедуры} - совокупность правил, заголовки которых имеют одно и то же имя и одну и ту же арность.
+
+\textbf{Предикат} - отношение, определяемое процедурой.
+
+\section*{Практическая часть л.р.1}
+
+\begin{task}
+    Разработать свою программу - «Телефонный справочник».
+    Протестировать работу программы.
+    \begin{lstlisting}[language=Prolog]
+PREDICATES
+	phonebook(phone, name, school\_number).
+
+CLAUSES 
+	phonebook("+79998881234", "Alice", 433).
+	phonebook("+79998881235", "Pasha", 415).
+	phonebook("+79998881236", "Nastya", 433).
+	phonebook("+79998881237", "Ivan", 424).
+	phonebook("+79998881238", "Dima", 123).
+	phonebook("+79998881134", "Oleg", 123).
+	phonebook("+79991881334", "Nikita", 25).
+	phonebook("+79998391234", "Misha", 1024).
+
+GOAL
+	phonebook(Phone_number, Name, 433).
+    \end{lstlisting}
+\end{task}
+
+\section*{Практическая часть л.р.2}
+
+\begin{task}
+    Составить программу – базу знаний, с помощью которой можно определить, например, 
+    множество студентов, обучающихся в одном ВУЗе. 
+    Студент может одновременно обучаться в нескольких ВУЗах. 
+    Привести примеры возможных вариантов вопросов и варианты ответов
+    (не менее 3-х).
+
+    \begin{lstlisting}[language=Prolog]
+DOMAINS 
+    student_id = integer.
+    student_name = symbol.
+    student_surname = symbol.
+    
+    university_id = integer.
+    university_name = symbol.
+    city = symbol.
+
+PREDICATES
+    study(student_id, university_id).
+    student(student_id, student_name, student_surname).
+    university(university_id, university_name, city).
+    
+    students(university_id, student_name, student_surname).
+    
+CLAUSES
+    student(0, "Alice", "Sukocheva").
+    student(1, "Nika", "Lilova").
+    student(2, "Masha", "Perestoronina").
+    student(3, "Pasha", "Perestoronin").
+    student(4, "Nastya", "Namestnik").
+    student(5, "Kirill", "Drovin").
+    student(6, "Tim", "Malov").
+    
+    university(0, "Bauman Moscow State Technical University", "Moscow").
+    university(1, "Petersburg State University", "Petersburg").
+    university(2, "Kuban State University", "Krasnodar").
+    
+    study(0, 0).
+    study(2, 0).
+    study(3, 0).
+    study(4, 0).
+    
+    study(5, 2).
+    study(5, 0).
+    
+    study(6, 0).
+    study(6, 1).
+    study(6, 2).
+    
+    students(University_id, Name, Surname) :- 
+            study(Student_id, University_id), 
+            student(Student_id, Name, Surname).
+    
+GOAL
+    % All infomation about students. 
+    % student(Id, Name, Surname).
+    
+    % All infomation about universities.
+    % university(Id, Name, City).
+    
+    % All id students from the university.
+    % study(Id, 0). % 0, 2, 3, 4, 5, 6
+    % study(Id, 1). % 6
+    % study(Id, 2). % 5, 6
+
+    % All name and surname students from the university.
+    % students(0, Name, Surname).
+    % students(1, Name, Surname).
+    % students(2, Name, Surname).
+    
+    % All universities where the student studies.
+    % study(0, U_id). % 0
+    % study(1, U_id). % study(0, U_id). 
+    study(6, U_id). % 0, 1, 2
+    \end{lstlisting}
+
+    На рис. \ref{ref:fig1} продемонстрировано определение id вузов, 
+    в которых учится студент с id = 6.
+
+    \begin{figure}[ht!]
+    	\centering{
+    		\includegraphics[width=0.5\textwidth]{img/1.jpg}
+    		\caption{Результат работы 1.} 
+            \label{ref:fig1}}
+    \end{figure}
+
+    На рис. \ref{ref:fig2} продемонстрировано определение имени и фамилии студентов,
+    обучающихся в вузе с id равным двум. 
+
+
+    \begin{figure}[ht!]
+    	\centering{
+    		\includegraphics[width=0.7\textwidth]{img/2.jpg}
+    		\caption{Результат работы 2.} 
+            \label{ref:fig2}}
+    \end{figure}
+
+    На рис. \ref{ref:fig3} продемонстрировано определение имени и фамилии студентов,
+    обучающихся в вузе с id равным 0. 
+
+
+    \begin{figure}[ht!]
+    	\centering{
+    		\includegraphics[width=0.65\textwidth]{img/3.jpg}
+    		\caption{Результат работы 3.} 
+            \label{ref:fig3}}
+    \end{figure}
+
+    На рис. \ref{ref:fig4} продемонстрировано определение id студентов,
+    обучающихся в вузе с id равным 0.
+
+    \begin{figure}[ht!]
+    	\centering{
+    		\includegraphics[width=0.65\textwidth]{img/4.jpg}
+    		\caption{Результат работы 4.} 
+            \label{ref:fig4}}
+    \end{figure}
+
+    На рис. \ref{ref:fig4} продемонстрировано определение 
+    всех имеющихся в базе данных вузов.     
+
+    \begin{figure}[ht!]
+    	\centering{
+    		\includegraphics[width=0.65\textwidth]{img/5.jpg}
+    		\caption{Результат работы 5.}
+            \label{ref:fig5} }
+    \end{figure}
+
+\end{task}
+
+\newpage
+
+\section*{Ответы на вопросы}
+
+1. Что собой представляет программа на Prolog
+
+Программа на Prolog представляет базу знаний и вопрос.
+
+2. Какова ее структура. 
+
+Структура программы на Prolog.
+
+\begin{enumerate}
+    \item директивы компилятора — зарезервированные символьные константы. (Пример ":-" - разделитель между заголовком и телом в правиле) 
+    \item CONSTANTS — раздел описания констант.
+    \item DOMAINS — раздел описания доменов.
+    \item DATABASE — раздел описания предикатов внутренней базы данных.
+    \item PREDICATES — раздел описания предикатов.
+    \item CLAUSES — раздел описания предложений базы знаний.
+    \item GOAL — раздел описания внутренней цели (вопроса).
+\end{enumerate}
+
+3. Как она реализуется.
+
+Описывается база знаний и задается вопрос.
+
+4. Как формируются результаты работы программы. 
+
+Система пытается найти такие значения переменных, при которых можно ответить на поставленный вопрос 'Да', используя базу знаний. %, путем унификации.
+
+
+\end{document}
