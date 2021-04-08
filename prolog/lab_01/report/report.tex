@@ -257,6 +257,81 @@ GOAL
 
 \end{task}
 
+\section*{Практическая часть л.р.3}
+
+\begin{task}
+    Составить программу, т.е. модель предметной области – базу знаний, объединив в ней
+    информацию – знания:
+    \begin{enumerate}
+        \item Телефонный справочник: Фамилия, Номер телефона, Адрес – структура (Город, Улица, Noдома, Noкв),
+        \item Автомобили: Фамилия владельца, Марка, Цвет, Стоимость, и др.,
+        \item Вкладчики банков: Фамилия, Банк, счет, сумма, др.
+    Владелец может иметь несколько телефонов, автомобилей, вкладов (Факты).
+    Используя правила, обеспечить возможность поиска:
+    \end{enumerate}
+
+    1. а) По номеру телефона найти: Фамилию, Марку автомобиля, Стоимость автомобиля
+    (может быть несколько),
+    в) Используя сформированное в пункте а) правило, по номеру телефона найти:
+    только Марку автомобиля (автомобилей может быть несколько),
+    
+    2. Используя простой, не составной вопрос: по Фамилии (уникальна в городе, но в
+    разных городах есть однофамильцы) и Городу проживания найти:
+    Улицу
+    проживания, Банки, в которых есть вклады и номер телефона.
+
+    \begin{lstlisting}[language=Prolog]
+DOMAINS 
+	surname = symbol.
+	phone_number = symbol.
+	address_struct = address(symbol, symbol, integer, integer).
+
+	label = symbol.
+	color = symbol.
+	price = integer.
+	
+	bank = symbol.
+	score = integer.
+	sum = integer.
+
+PREDICATES
+	phonebook(surname, phone_number, address_struct).
+	car(surname, label, color, price).
+	bank_depositor(surname, bank, score, sum).
+	
+	f1(surname, phone_number, label, price).
+	f1_2(phone_number, label).
+	f2(surname, symbol, phone_number, symbol, bank).
+
+CLAUSES
+	phonebook("Tilov", "89999899999", address("Moscow", "2 baumanskaya", 57, 25)).
+	phonebook("Tilov", "89999899977", address("Moscow", "2 baumanskaya", 57, 25)).
+	phonebook("Alovik", "89999812999", address("Moscow", "3 baumanskaya", 50, 75)).
+	
+	car("Tilov", "Buick", "black", 12000000).
+	car("Tilov", "Cadillac", "white", 22000000).
+	
+	bank_depositor("Alovik", "sberbank", 10000, 25000).
+	bank_depositor("Alovik", "vtb", 20000, 35000).
+	
+	f1(Surname, Phone_number, Label, Price) :-  
+		phonebook(Surname, Phone_number, _), 
+		car(Surname, Label, _, Price). 
+		
+	f1_2(Phone_number, Label) :- 
+		f1(_, Phone_number, Label, _).
+	
+	f2(Surname, City, Phone_number, Street, Bank) :- 
+		phonebook(Surname, Phone_number, address(City, Street, _, _)), bank_depositor(Surname, Bank, _, _).
+	
+GOAL
+	f1(Surname, "89999899999", Label, Price).
+	% f1_2("89999899999", Label).
+	% f2("Alovik", "Moscow", Phone_number, Street, Bank).
+    \end{lstlisting}
+
+\end{task}
+
 \newpage
 
 \section*{Ответы на вопросы}
