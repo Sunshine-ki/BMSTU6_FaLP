@@ -1,0 +1,3 @@
+phone("+101", Kira, 123).
+
+phone(Phone_number, Name, Number).
