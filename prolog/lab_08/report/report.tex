@@ -1,0 +1,235 @@
+\documentclass[a4paper,oneside,12pt]{extreport}
+
+\include{preamble}
+
+
+\begin{document}
+
+\include{title}
+
+\section*{Практическая часть л.р.16}
+
+\begin{task}
+    Используя хвостовую рекурсию, разработать программу, позволяющую найти:
+
+    \begin{enumerate}
+        \item факториал числа;
+        \item n-ое число Фибоначчи.
+    \end{enumerate}
+
+    \begin{lstlisting}[language=Prolog]
+DOMAINS 
+	number = integer
+
+PREDICATES
+	factorial(number, number, number).
+	factorialWrapper(number, number).
+	
+CLAUSES
+	factorial(0, Res, Res) :- !.
+	factorial(Number, Current, Res) :- 
+		NextNumber = Number - 1,
+		Mult = Current * Number,
+		factorial(NextNumber, Mult, Res).
+	
+	factorialWrapper(Number, -1) :- Number < 0, !. % Error. 
+	factorialWrapper(Number, Res) :- factorial(Number, 1, Res).
+	
+GOAL
+	% factorialWrapper(5, Result).
+	% factorialWrapper(-5, Result).	
+	factorialWrapper(0, Result).
+\end{lstlisting}
+
+    \newpage
+
+    \begin{figure}[ht!]
+    \centering{
+        \includegraphics[width=0.9\textwidth]{img/res_lab_18/1.jpg}
+        \caption{Факториал числа}}
+    \end{figure}
+
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_18/2.jpg}
+            \caption{Факториал числа}}
+    \end{figure}
+
+    \begin{figure}[ht!]
+    \centering{
+        \includegraphics[width=0.9\textwidth]{img/res_lab_18/3.jpg}
+        \caption{Факториал числа}}
+    \end{figure}
+    
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_18/4.jpg}
+            \caption{Факториал числа}}
+    \end{figure}
+
+    \newpage
+
+    \begin{lstlisting}[language=Prolog]
+DOMAINS 
+	number = integer
+
+PREDICATES
+	fibonacci(number, number, number, number).
+	fibonacciWrapper(number, number).
+
+CLAUSES
+	fibonacci(1, Prev, _, Prev) :- !.
+	fibonacci(Number, Prev, Current, Res) :-
+		NewNumber = Number - 1,
+		Newprev = Current,
+		NewCurrent = Prev + Current,
+		fibonacci(NewNumber, NewPrev, NewCurrent, Res).
+	
+	
+	fibonacciWrapper(Number, -1) :- Number < 1, !. % Error.
+	fibonacciWrapper(Number, Res) :- fibonacci(Number, 1, 1, Res).
+	
+	
+GOAL
+	% fibonacciWrapper(-15, Result).
+	% fibonacciWrapper(1, Result).
+	% fibonacciWrapper(2, Result).
+	% fibonacciWrapper(3, Result).
+	fibonacciWrapper(8, Result).
+    \end{lstlisting}
+
+    \begin{figure}[ht!]
+    \centering{
+        \includegraphics[width=0.9\textwidth]{img/res_lab_18/5.jpg}
+        \caption{Фибоначчи}}
+    \end{figure}
+    
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_18/6.jpg}
+            \caption{Фибоначчи}}
+    \end{figure}
+
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_18/7.jpg}
+            \caption{Фибоначчи}}
+    \end{figure}
+
+\end{task}
+
+\newpage
+
+\section*{Практическая часть л.р.17}
+
+\begin{task}
+    Используя хвостовую рекурсию, разработать эффективную программу, позволяющую:
+
+    \begin{enumerate}
+        \item найти длину списка (по верхнему уровню);
+        \item найти сумму элементов числового списка;
+        \item найти сумму элементов числового списка, стоящих на нечетных позициях
+        исходного списка (нумерация от 0).
+    \end{enumerate}
+
+    Убедиться в правильности результатов.
+
+    Длина списка.
+    \begin{lstlisting}[language=Prolog]
+DOMAINS
+    list = integer*.
+
+PREDICATES
+    length(list, integer, integer).
+    lengthWapper(list, integer).
+    
+CLAUSES
+    length([], Res, Res) :- !.
+    length([_|T], CurrValue, Res) :- 
+        NewCurrValue = CurrValue + 1,
+        length(T, NewCurrValue, Res). 
+    
+    lengthWapper(L, Res) :- length(L, 0, Res).
+
+GOAL
+    % lengthWapper([1, 2, 3], Result).
+    % lengthWapper([], Result).
+    lengthWapper([1, 2, 3, 1, 2, 3, 1, 2, 3], Result).
+    \end{lstlisting}
+
+    Сумма элементов числового списка.
+    \begin{lstlisting}[language=Prolog]
+DOMAINS
+    list = integer*.
+
+PREDICATES
+    sum(list, integer, integer).
+    sumWapper(list, integer).
+    
+CLAUSES
+    sum([], Res, Res) :- !.
+    sum([H|T], CurrValue, Res) :- 
+        NewCurrValue = CurrValue + H,
+        sum(T, NewCurrValue, Res). 
+    
+    sumWapper(L, Res) :- sum(L, 0, Res).
+
+GOAL
+    % sumWapper([1, 2, 3], Result).
+    % sumWapper([], Result).
+    sumWapper([1, 2, 3, 1, 2, 3, 1, 2, 3], Result).
+    \end{lstlisting}
+
+    \newpage
+    
+    Сумма элементов числового списка, стоящих на нечетных позициях.
+    \begin{lstlisting}[language=Prolog]
+DOMAINS
+    list = integer*.
+    flag = integer. 
+
+PREDICATES
+    sum_odd(list, integer, integer, flag).
+    sum_oddWapper(list, integer).
+    
+CLAUSES
+    sum_odd([], Res, Res, _) :- !.
+    sum_odd([_|T], CurrValue, Res, 0) :- sum_odd(T, CurrValue, Res, 1).
+    
+    sum_odd([H|T], CurrValue, Res, 1) :- 
+        NewCurrValue = CurrValue + H,
+        sum_odd(T, NewCurrValue, Res, 0).
+    
+    sum_oddWapper(L, Res) :- sum_odd(L, 0, Res, 0). 
+
+GOAL
+    % sum_oddWapper([1, 2, 3], Result).
+    %sum_oddWapper([], Result).
+    %sum_oddWapper([1, 2, 3, 1, 2, 3, 1, 2, 3], Result).
+    sum_oddWapper([1, 2, 3, 4, 5], Result).
+    %sum_oddWapper([1], Result).
+    \end{lstlisting}
+
+    \begin{figure}[ht!]
+    \centering{
+        \includegraphics[width=0.9\textwidth]{img/res_lab_19/1.jpg}
+        \caption{Сумма элементов числового списка, стоящих на нечетных позициях.}}
+    \end{figure}
+    
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_19/2.jpg}
+            \caption{Сумма элементов числового списка, стоящих на нечетных позициях.}}
+    \end{figure}
+
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_19/3.jpg}
+            \caption{Сумма элементов числового списка, стоящих на нечетных позициях.}}
+    \end{figure}
+\end{task}
+
+\newpage
+
+
+\end{document}

@@ -1,0 +1,254 @@
+\documentclass[a4paper,oneside,12pt]{extreport}
+
+\include{preamble}
+
+
+\begin{document}
+
+\include{title}
+
+\section*{Практическая часть л.р.16}
+
+\begin{task}
+    Создать базу знаний: «ПРЕДКИ», позволяющую наиболее эффективным способом
+    (за меньшее количество шагов, что обеспечивается меньшим количеством предложений БЗ -
+    правил), используя разные варианты (примеры) одного вопроса, определить (указать: какой
+    вопрос для какого варианта):
+
+    \begin{enumerate}
+        \item по имени субъекта определить всех его бабушек (предки 2-го колена);
+        \item по имени субъекта определить всех его дедушек (предки 2-го колена);
+        \item по имени субъекта определить всех его бабушек и дедушек (предки 2-го колена);
+        \item по имени субъекта определить его бабушку по материнской линии (предки 2-го колена);
+        \item по имени субъекта определить его бабушку и дедушку по материнской линии (предки 2-го колена).
+    \end{enumerate}
+
+    \begin{lstlisting}[language=Prolog]
+DOMAINS 
+    name = symbol.
+    sex = symbol.
+    
+PREDICATES
+    parent(name, name, sex).
+    grand(name, name, sex, sex).
+    
+CLAUSES
+    parent("Kira", "Ila", "w").
+    parent("Kira", "Vitya", "m").
+    
+    parent("Vitya", "Elena", "w").
+    parent("Vitya", "Mike", "m").
+    
+    parent("Ila", "Olya", "w").
+    parent("Ila", "Tim", "m").
+    
+    grand(Child, NameGrandmother, Line, Sex) :- 
+            parent(Child, NameParent, Line), 
+            parent(NameParent, NameGrandmother, Sex).
+        
+GOAL
+    % Grandmothers (1)
+    % grand("Kira", NameGrandmotherR, _, "w").
+    
+    % Grandfathers (2)
+    % grand("Kira", NameGrandfatheR, _, "m").
+    
+    % Grandmothers and grandfathers (3)
+    % grand("Kira", NameGrand, _, _).
+    
+    % Maternal grandmother (4)
+    % grand("Kira", NameGrandmotherR, "w", "w").
+    
+    % Maternal grandparents (5)
+    grand("Kira", NameGrandmotherR, "w", _).
+    \end{lstlisting}
+
+    \newpage
+
+    \begin{figure}[ht!]
+    \centering{
+        \includegraphics[width=0.9\textwidth]{img/res_lab_16/1.jpg}
+        \caption{Поиск всех бабушек}}
+    \end{figure}
+    
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_16/2.jpg}
+            \caption{Поиск дедушек}}
+    \end{figure}
+    
+    \newpage
+
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_16/3.jpg}
+            \caption{Поиск бабушек и дедушек}}
+    \end{figure}
+    
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_16/4.jpg}
+            \caption{Поиск бабушек по маминой линии}}
+    \end{figure}
+    
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_16/5.jpg}
+            \caption{Поиск бабушек и дедушек по материнской линии}}
+    \end{figure}
+\end{task}
+
+\newpage
+
+\section*{Практическая часть л.р.17}
+
+\begin{task}
+    В одной программе написать правила, позволяющие найти
+
+    \begin{enumerate}
+        \item Максимум из двух чисел
+        \begin{enumerate}
+            \item без использования отсечения,
+            \item с использованием отсечения;
+        \end{enumerate}
+        \item Максимум из трех чисел
+        \begin{enumerate}
+            \item без использования отсечения,
+            \item с использованием отсечения;
+        \end{enumerate}
+    \end{enumerate}
+
+    \begin{lstlisting}[language=Prolog]
+DOMAINS 
+    number = integer
+
+PREDICATES
+    maximumTwo(number, number, number).
+    maximumTwo2(number, number, number).
+
+    maximumThree(number, number, number, number).
+    maximumThree2(number, number, number, number).
+    
+CLAUSES
+    maximumTwo(A, B, A) :- A >= B.
+    maximumTwo(A, B, B) :- A < B.
+    
+    maximumTwo2(A, B, A) :- A >= B, !.
+    maximumTwo2(_, B, B).
+    
+    maximumThree(A, B, C, A) :- A >= B, A >= C.
+    maximumThree(_, B, C, Res) :- maximumTwo(B, C, Res).
+    
+    maximumThree2(A, B, C, A) :- A >= B, A >= C, !.
+    maximumThree2(_, B, C, Res) :- maximumTwo(B, C, Res). 
+    
+    
+GOAL
+    maximumThree(3, 3, 3, Result).       
+    \end{lstlisting}
+
+    \begin{figure}[ht!]
+    \centering{
+        \includegraphics[width=0.9\textwidth]{img/res_lab_17/1.jpg}
+        \caption{Максимум из двух чисел}}
+    \end{figure}
+    
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_17/2.jpg}
+            \caption{Максимум из двух чисел}}
+    \end{figure}
+    
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_17/3.jpg}
+            \caption{Максимум из двух чисел}}
+    \end{figure}
+    
+    %  с использованием отсечения
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_17/4.jpg}
+            \caption{Максимум из двух чисел с использованием отсечения}}
+    \end{figure}
+    
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_17/5.jpg}
+            \caption{Максимум из двух чисел с использованием отсечения}}
+    \end{figure}
+
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_17/6.jpg}
+            \caption{Максимум из двух чисел с использованием отсечения}}
+    \end{figure}
+
+    % Three
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_17/three/1.jpg}
+            \caption{Максимум из трех чисел}}
+    \end{figure}
+    
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_17/three/2.jpg}
+            \caption{Максимум из трех чисел}}
+    \end{figure}
+    
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_17/three/3.jpg}
+            \caption{Максимум из трех чисел}}
+    \end{figure}
+
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_17/three/4.jpg}
+            \caption{Максимум из трех чисел}}
+    \end{figure}
+
+
+    %  с использованием отсечения
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_17/three/5.jpg}
+            \caption{Максимум из трех чисел с использованием отсечения}}
+    \end{figure}
+    
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_17/three/6.jpg}
+            \caption{Максимум из трех чисел с использованием отсечения}}
+    \end{figure}
+    
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_17/three/7.jpg}
+            \caption{Максимум из трех чисел с использованием отсечения}}
+    \end{figure}
+
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_17/three/8.jpg}
+            \caption{Максимум из трех чисел с использованием отсечения}}
+    \end{figure}
+
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_17/three/9.jpg}
+            \caption{Максимум из трех чисел с использованием отсечения}}
+    \end{figure}
+
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.9\textwidth]{img/res_lab_17/three/10.jpg}
+            \caption{Максимум из трех чисел с использованием отсечения}}
+    \end{figure}
+\end{task}
+
+\newpage
+
+
+\end{document}
