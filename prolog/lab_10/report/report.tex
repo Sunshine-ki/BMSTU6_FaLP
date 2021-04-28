@@ -1,0 +1,122 @@
+\documentclass[a4paper,oneside,12pt]{extreport}
+
+\include{preamble}
+
+
+\begin{document}
+
+\include{title}
+
+\section*{Практическая часть}
+
+\begin{task}
+    Разработать программу, позволяющую:
+    \begin{enumerate}
+        \item сформировать список из элементов числового списка, больших заданного значения;
+        \item сформировать список из элементов, стоящих на нечетных позициях исходного списка (нумерация от 0);
+        \item удалить заданный элемент из списка (один или все вхождения);
+        \item преобразовать список в множество (можно использовать ранее разработанные процедуры).
+    \end{enumerate}
+
+    Список из элементов числового списка, больших заданного значения:
+    \begin{lstlisting}[language=Prolog]
+DOMAINS
+    list = integer*.
+
+PREDICATES
+    f(list, integer, list).
+
+CLAUSES
+    f([H|T], Elem, [H|Res]) :-
+        H > Elem, !,
+        f(T, Elem, Res).
+        
+    f([_|T], Elem, Res) :-
+        f(T, Elem, Res), !.
+    
+    f([], _, []) :- !.
+
+GOAL
+    f([4, 5,1, 4, 6], 3, Result).
+    \end{lstlisting}
+
+    \begin{figure}[ht!]
+        \centering{
+            \includegraphics[width=0.8\textwidth]{img/1.jpg}
+            \caption{Результат работы первого задания}}
+        \end{figure}
+
+    \newpage
+
+    Список из элементов, стоящих на нечетных позициях исходного списка (нумерация от 0):
+    \begin{lstlisting}[language=Prolog]
+DOMAINS
+    list = integer*.
+    
+    PREDICATES
+    odd(list, list).
+    
+CLAUSES
+    odd([_,H|T], [H|Res]) :- odd(T, Res).
+    odd([_], []) :- !.
+    odd([],[]) :- !.
+    
+GOAL
+    odd([0, 1, 2, 3, 4, 5, 7], Result).
+    \end{lstlisting}
+
+    \begin{figure}[ht!]
+    \centering{
+        \includegraphics[width=0.8\textwidth]{img/2.jpg}
+        \caption{Результат работы второго задания}}
+    \end{figure}
+
+
+    Удаление заданного элемента из списка и преобразование списка в множество:
+    \begin{lstlisting}[language=Prolog]
+DOMAINS
+    list = integer*.
+
+PREDICATES
+    del(integer, list, list).
+    createSet(list, list).
+
+CLAUSES
+    del(Elem, [H|T], [H|Res]) :- 
+        H <> Elem, !,
+        del(Elem, T, Res).
+        
+    del(Elem, [_|T], Res) :-
+        del(Elem, T, Res), !.
+    
+    del(_, [], []) :- !.
+    
+    
+    createSet([H|T], [H|Res]) :-
+        del(H, T, Tmp),
+        createSet(Tmp, Res).
+    createSet([], []).
+
+GOAL
+    del(3, [4, 3, 1, 2, 3], Result).
+    % createSet([1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 3, 2, 6], Result).
+    \end{lstlisting}
+        
+    \begin{figure}[ht!]
+    \centering{
+        \includegraphics[width=0.8\textwidth]{img/3.jpg}
+        \caption{Результат работы третьего задания}}
+    \end{figure}
+
+    \begin{figure}[ht!]
+    \centering{
+        \includegraphics[width=0.8\textwidth]{img/4.jpg}
+        \caption{Результат работы четвертого задания}}
+    \end{figure}
+
+\end{task}
+
+\newpage
+
+
+\end{document}
